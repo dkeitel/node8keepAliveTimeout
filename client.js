@@ -17,7 +17,7 @@ function getStatus() {
         if (err) {
             throw err;
         }
-        console.log('got get response', resp.statusCode, resp.body);
+        console.log('Got get response', resp.statusCode, resp.body);
     });
 }
 
@@ -30,8 +30,8 @@ function run() {
 		if (err) {
 			throw err;
 		}
-		console.log('got options response', resp.statusCode);
-		console.log('sending post request');
+		console.log('Got options response', resp.statusCode);
+		console.log('Sending post request');
 		request.post(baseUrl + '/longpost', {
 				agent: agent,
 				json: true,
@@ -43,7 +43,7 @@ function run() {
 			if (err) {
 				throw err;
 			}
-			console.log('got post response', resp.statusCode, resp.body);
+			console.log('Got post response', resp.statusCode, resp.body);
 		});
 	});
 }

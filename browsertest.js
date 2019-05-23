@@ -14,10 +14,10 @@ $.ajax({
         ForcePreflight: 'Yes'
     },
     success: function (data) {
-        console.log('got result: ', data);
+        console.log('Got result: ', data);
     },
     dataType: 'json',
     error: function (xhr, textStatus, errorThrown) {
-        console.log('error', textStatus, errorThrown);
+        console.log('Error', textStatus, errorThrown);
     }
 })

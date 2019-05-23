@@ -4,7 +4,11 @@ Node 8 introduced a change in the handling of http keep-alive connections. IMHO,
 
 # To Reproduce
 
-        npm run test -- --keepAliveTimeout 5000
+        npm run test -- --keepAliveTimeout 500
+        
+# To run with disabled keepAliveTimeout
+
+        npm run test -- --keepAliveTimeout 500 --keepAliveDisabled
 
 Starts a little express server (`server.js`) and a client. 
 * The server is a standard express server with a long running post request (`/longpost` takes 10s).

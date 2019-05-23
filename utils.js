@@ -7,6 +7,11 @@ function readKeepAliveTimeout() {
     return 5000;
 }
 
+function isKeepAliveDisabled() {
+    return process.argv.indexOf('--keepAliveDisabled') !== -1;
+}
+
 module.exports = {
-    readKeepAliveTimeout
+    readKeepAliveTimeout,
+    isKeepAliveDisabled
 };
