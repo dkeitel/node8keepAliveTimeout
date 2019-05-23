@@ -18,26 +18,31 @@ function getStatus() {
     });
 }
 
-request(baseUrl + '/longpost', {
-    method: 'OPTIONS',
-    agent: agent
-}, function(err, resp) {
-    if (err) {
-        throw err;
-    }
-    console.log('got options response', resp.statusCode);
-    console.log('sending post request')
-    request.post(baseUrl + '/longpost', {
-            agent: agent,
-            json: true,
-            body: {id: 1},
-            headers: [
-                { name: 'Connection', value: 'keep-alive' }
-            ]
-        }, function(err, resp) {
-        if (err) {
-            throw err;
-        }
-        console.log('got post response', resp.statusCode, resp.body);
-    });
-});
+
+function run() {
+	request(baseUrl + '/longpost', {
+		method: 'OPTIONS',
+		agent: agent
+	}, function(err, resp) {
+		if (err) {
+			throw err;
+		}
+		console.log('got options response', resp.statusCode);
+		console.log('sending post request');
+		request.post(baseUrl + '/longpost', {
+				agent: agent,
+				json: true,
+				body: {id: 1},
+				headers: [
+					{ name: 'Connection', value: 'keep-alive' }
+				]
+			}, function(err, resp) {
+			if (err) {
+				throw err;
+			}
+			console.log('got post response', resp.statusCode, resp.body);
+		});
+	});
+}
+
+setInterval(run, 5000);
