@@ -1,12 +1,15 @@
-let express = require('express');
-let http = require('http');
-let bodyParser = require('body-parser');
+const express = require('express');
+const http = require('http');
+const bodyParser = require('body-parser');
+const { readKeepAliveTimeout } = require("./utils");
 
-let app = express();
+const keepAliveTimeout = readKeepAliveTimeout();
+let connections = 0;
+const app = express();
 
 app.use(bodyParser.json());
 
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
     console.log('got request', req.method, req.path);
     if (req.header('Origin')) {
         res.header('Access-Control-Allow-Origin', req.header('Origin'));
@@ -21,25 +24,29 @@ let router = express.Router();
 
 let prev;
 
-router.post('/longpost', function(req, resp) {
+function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+}
+
+router.post('/longpost', (req, resp) => {
+    ++connections;
     let now = new Date().getTime();
     if (prev) {
         let dt = now - prev;
-        console.log('format called ' + dt + 'ms after previous');
+        console.log(`format called ${dt}ms after previous. Open connections: ${connections}`);
     }
     prev = now;
-    setTimeout(function() {
-        resp.send(JSON.stringify({status: 'OK'}));
-    }, 10000)
+    setTimeout(() => {
+        resp.send(JSON.stringify({ status: 'OK' }));
+        --connections;
+    }, keepAliveTimeout * 3 - getRandomInt(20))
 });
 
 app.use('/', router);
 
 let server = http.createServer(app);
-let iKeepAlive = process.argv.indexOf('--keepAliveTimeout');
-if (iKeepAlive != -1) {
-    // workaround: set the keepAliveTimeout property
-    server.keepAliveTimeout = parseInt(process.argv[iKeepAlive + 1]);
-    console.log('set keepAliveTimeout to', server.keepAliveTimeout);
-}
+// workaround: set the keepAliveTimeout property
+server.keepAliveTimeout = keepAliveTimeout;
+console.log('set keepAliveTimeout to', server.keepAliveTimeout);
+
 server.listen(9666);

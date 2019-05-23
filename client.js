@@ -1,5 +1,8 @@
-let request = require('request');
-let http = require('http');
+const request = require('request');
+const http = require('http');
+const { readKeepAliveTimeout } = require("./utils");
+
+const keepAliveTimeout = readKeepAliveTimeout();
 
 let agent = new http.Agent({
     keepAlive: true,
@@ -10,7 +13,7 @@ let baseUrl = 'http://localhost:9666';
 function getStatus() {
     request.get(baseUrl + '/status', {
         agent: agent
-    }, function (err, resp) {
+    }, (err, resp) => {
         if (err) {
             throw err;
         }
@@ -23,7 +26,7 @@ function run() {
 	request(baseUrl + '/longpost', {
 		method: 'OPTIONS',
 		agent: agent
-	}, function(err, resp) {
+	}, (err, resp) => {
 		if (err) {
 			throw err;
 		}
@@ -36,7 +39,7 @@ function run() {
 				headers: [
 					{ name: 'Connection', value: 'keep-alive' }
 				]
-			}, function(err, resp) {
+			}, (err, resp) => {
 			if (err) {
 				throw err;
 			}
@@ -45,4 +48,4 @@ function run() {
 	});
 }
 
-setInterval(run, 5000);
+setInterval(run, keepAliveTimeout);
